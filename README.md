@@ -1,7 +1,4 @@
-
 # X'manikté - HACK del GIL - UNAM
-
-Frontend en React + Vite con componentes y CSS separados por archivo.
 
 ## Instalar
 ```bash
@@ -18,9 +15,7 @@ npm run dev
 npm run build
 ```
 
-## GitHub Pages
-Revisa `vite.config.js` y cambia `base` si el nombre del repo cambia.
-Luego:
+
 ```bash
 npm run deploy
 ```
