@@ -1,0 +1,114 @@
+
+.project { padding: 3rem 0; }
+
+.project__grid {
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  gap: 1.5rem;
+}
+
+.project__left, .project__right { padding: 2rem; }
+
+.project__left h2, .project__right h3 {
+  margin: 0.5rem 0 0;
+  color: var(--sky-950);
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.project__intro {
+  color: var(--slate-600);
+  line-height: 1.9;
+  margin-top: 1rem;
+}
+
+.project__items {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.project__item,
+.project__need {
+  display: flex;
+  gap: 0.95rem;
+  align-items: flex-start;
+  padding: 1rem;
+  border-radius: 1.4rem;
+  background: rgba(240, 249, 255, 0.65);
+  border: var(--border-soft);
+}
+
+.project__item-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 1rem;
+  background: white;
+  color: var(--sky-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+  flex-shrink: 0;
+}
+
+.project__item h3 {
+  margin: 0;
+  color: var(--sky-950);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.project__item p {
+  margin: 0.4rem 0 0;
+  color: var(--slate-600);
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+.project__needs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-top: 1.4rem;
+}
+
+.project__need {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 1rem;
+  border-radius: 1.25rem;
+  background: white;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+
+.project__need svg {
+  color: var(--sky-500);
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.project__need p {
+  margin: 0;
+  color: var(--slate-600);
+  line-height: 1.75;
+  font-size: 0.94rem;
+}
+
+@media (max-width: 900px) {
+  .project__grid { grid-template-columns: 1fr; }
+  .project__needs { grid-template-columns: 1fr; }
+}
+
+.project__item,
+.project__need {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.project__item:hover,
+.project__need:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(14, 165, 233, 0.08);
+}

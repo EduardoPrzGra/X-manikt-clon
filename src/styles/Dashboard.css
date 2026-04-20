@@ -1,0 +1,191 @@
+
+.dashboard { padding: 1rem 0 0; }
+
+.dashboard__heading h2 {
+  margin: 0.4rem 0 0;
+  color: var(--sky-950);
+  font-size: 2.4rem;
+  font-weight: 900;
+}
+
+.dashboard__heading > p:last-child {
+  max-width: 720px;
+  color: var(--slate-600);
+  line-height: 1.8;
+  margin-top: 0.8rem;
+  margin-bottom: 0;
+}
+
+.dashboard__grid {
+  display: grid;
+  grid-template-columns: 320px 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.dashboard__panel { padding: 1.2rem; overflow: hidden; }
+.dashboard__panel-title { display: flex; gap: 0.85rem; align-items: center; }
+
+.dashboard__panel-title h3 {
+  margin: 0;
+  color: var(--sky-950);
+  font-size: 1.06rem;
+  font-weight: 900;
+}
+
+.dashboard__panel-title p { margin: 0.2rem 0 0; color: var(--slate-500); font-size: 0.9rem; }
+
+.dashboard__panel,
+.dashboard__upload-box,
+.dashboard__toggle,
+.dashboard__code,
+.dashboard__download {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.dashboard__panel:hover {
+  transform: translateY(-4px);
+}
+
+
+.dashboard__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 1rem;
+  background: var(--sky-100);
+  color: var(--sky-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dashboard__controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-top: 1.4rem;
+}
+
+.dashboard__controls label {
+  display: block;
+  margin-bottom: 0.55rem;
+  color: var(--sky-900);
+  font-size: 0.94rem;
+  font-weight: 800;
+}
+
+.dashboard__upload-box {
+  border: 2px dashed var(--sky-300);
+  border-radius: 1.75rem;
+  background: var(--sky-50);
+  padding: 2rem 1rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  transition: background 0.2s ease;
+}
+
+.dashboard__upload-box:hover { background: #eaf7ff;    transform: translateY(-3px);}
+.dashboard__upload-box span { color: var(--sky-900); font-weight: 800; }
+.dashboard__upload-box small { color: var(--slate-500); }
+
+.dashboard__upload-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  background: white;
+  color: var(--sky-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.dashboard__hidden-input { display: none; }
+
+.dashboard__file-ok {
+  display: flex;
+  gap: 0.55rem;
+  align-items: center;
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #d1fae5;
+  border-radius: 1.2rem;
+  padding: 0.9rem 1rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.dashboard__toggle-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+
+.dashboard__toggle {
+  border: none;
+  border-radius: 1rem;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  background: var(--sky-50);
+  color: var(--sky-700);
+  font-weight: 800;
+}
+
+.dashboard__toggle--active {
+  background: var(--sky-500);
+  color: white;
+  box-shadow: 0 12px 25px rgba(14, 165, 233, 0.2);
+}
+
+.dashboard__controls select {
+  width: 100%;
+  border: 1px solid var(--sky-200);
+  border-radius: 1rem;
+  padding: 0.9rem 1rem;
+  background: white;
+  color: var(--slate-700);
+  outline: none;
+}
+
+.dashboard__status {
+  background: var(--slate-900);
+  color: #cbd5e1;
+  border-radius: 1.35rem;
+  padding: 1rem;
+  line-height: 1.7;
+  font-size: 0.94rem;
+}
+
+.dashboard__status-title { margin: 0 0 0.35rem; color: white; font-weight: 900; }
+
+.dashboard__panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: var(--border-soft);
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.dashboard__download { padding: 0.75rem 1rem; font-size: 0.9rem; }
+
+.dashboard__code {
+  height: 430px;
+  border-radius: 1.5rem;
+  padding: 1rem;
+  overflow: auto;
+}
+
+.dashboard__code pre {
+  white-space: pre-wrap;
+  line-height: 1.8;
+  font-size: 0.9rem;
+}
+.dashboard__code--light:hover,
+.dashboard__code--dark:hover {
+  transform: translateY(-2px);
+}
+@media (max-width: 1100px) {
+  .dashboard__grid { grid-template-columns: 1fr; }
+}
