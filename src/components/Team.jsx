@@ -1,28 +1,26 @@
-
 import '../styles/Team.css'
 
 const teamMembers = [
   {
-    name: 'María Fernanda Ordóñez',
-    role: 'Frontend / Diseño UX',
-    bio: 'Estudiante de Ingeniería en Computación. Le interesa crear interfaces claras, atractivas y funcionales para proyectos tecnológicos y académicos.',
-    initials: 'MFOF',
+    name: 'María Fernanda Ordóñez Figueroa',
+    tag: 'Frontend · UX · Ciencia',
+    bio: 'Estudiante de Ingeniería en Computación (UNAM). Apasionada por el software, la experiencia de usuario y la divulgación científica. Interesada en construir tecnología con impacto real.',
+    image: `${import.meta.env.BASE_URL}assets/team/maria.jpg`,
   },
   {
-    name: 'Integrante 2',
-    role: 'Backend / Procesamiento',
-    bio: 'Encargado del flujo de extracción, limpieza de texto y transformación de entradas hacia estructuras compatibles con MDF.',
-    initials: 'I2',
-  },
-   {
+    name: 'Sergio Manuel Ramirez Mejia',
+    tag: 'Backend · Validacion',
+    bio: 'Estudiante de ingeniería en computación cursando sexto y séptimo semestre. Encargado de pruebas y documentación.',
+    image: `${import.meta.env.BASE_URL}assets/team/sergio.jpeg`,  },
+  {
     name: 'Integrante 3',
-    role: 'Backend / Procesamiento',
+    tag: 'Backend · Regex',
     bio: 'Encargado del flujo de extracción, limpieza de texto y transformación de entradas hacia estructuras compatibles con MDF.',
     initials: 'I3',
   },
   {
     name: 'Integrante 4',
-    role: 'Datos / Validación',
+    tag: 'Backend · Datos',
     bio: 'Se enfoca en revisar consistencia de etiquetas, estructura de salidas y validación del resultado final.',
     initials: 'I4',
   },
@@ -37,7 +35,8 @@ export default function Team() {
             <p className="section-tag">Equipo</p>
             <h2>Integrantes y semblanza</h2>
             <p>
-              Nosotros somos.
+              Nosotros somos un equipo de ingenieros en computación, tratando de
+              hacer que las lenguas indígenas estén X&apos;manikté (siempre vivas).
             </p>
           </div>
 
@@ -45,14 +44,24 @@ export default function Team() {
             {teamMembers.map((member) => (
               <div key={member.name} className="team__card reveal reveal-delay-1">
                 <div className="team__header">
-                  <div className="team__avatar">{member.initials}</div>
+                  <div className="team__avatar">
+                      {member.image ? (
+                      <img src={member.image} alt={member.name} />
+                       ) : (
+                       member.initials
+                      )}
+                  </div>                  
                   <div>
                     <h3>{member.name}</h3>
-                    <p>{member.role}</p>
                   </div>
                 </div>
 
-                <p className="team__bio">{member.bio}</p>
+                <div className="team__bio">
+                  {member.tag && (
+                    <span className="team__tag">{member.tag}</span>
+                  )}
+                  <p>{member.bio}</p>
+                </div>
               </div>
             ))}
           </div>

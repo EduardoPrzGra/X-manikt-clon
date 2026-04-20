@@ -6,12 +6,14 @@ export default function Hero() {
   return (
     <section id="inicio" className="hero">
       <div className="container hero__grid">
-        <div className="card hero__main reveal">          <div className="hero__badge">
+        <div className="card hero__main reveal">          
+          <div className="hero__badge">
             <Sparkles size={16} />
             Plataforma de extracción y transformación MDF
           </div>
 
-          <h2 className="hero__headline reveal reveal-delay-1">            Convierte diccionarios a MDF, JSON y YAML en una sola interfaz.
+          <h2 className="hero__headline reveal reveal-delay-1">            
+            Convierte diccionarios a MDF, JSON y YAML en una sola interfaz.
           </h2>
 
           <p className="hero__text">
