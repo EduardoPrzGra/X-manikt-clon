@@ -9,7 +9,7 @@ export default function Dashboard() {
   const [isProcessing, setIsProcessing] = useState(false)
   const fileRef = useRef(null)
 
-  // 1. CARGA AUTOMÁTICA (Desde el Repositorio)
+  // 1. CARGA DESDE REPOSITORIO (Cloud)
   useEffect(() => {
     if (!uploadedFile) {
       const fileName = dictionaryType.toLowerCase();
@@ -18,6 +18,7 @@ export default function Dashboard() {
       fetch(url)
         .then(res => res.json())
         .then(data => {
+          // Soporta tanto listas directas [] como objetos con llave raíz
           const lista = Array.isArray(data) ? data : data[Object.keys(data)[0]];
           setExtractedData(lista || []);
         })
@@ -25,40 +26,33 @@ export default function Dashboard() {
     }
   }, [dictionaryType, uploadedFile]);
 
-  // 2. MANEJO DE SUBIDA DE ARCHIVOS (PDF, DOCX, TXT)
+  // 2. PROCESAMIENTO DE ARCHIVOS CRUDOS (PDF, DOCX, TXT)
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
     if (file) {
       setUploadedFile(file);
       setIsProcessing(true);
 
-      // Simulamos el procesamiento del script de Python
+      // Simulación de ejecución del script de Python (1.5 segundos)
       setTimeout(() => {
         setIsProcessing(false);
-        // Si es TXT, intentamos leerlo. Si es PDF/DOCX, mostramos un aviso de éxito.
-        if (file.type === "text/plain") {
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            setExtractedData([{ id: "1", lx: "Archivo Detectado", dn: event.target.result.substring(0, 100) + "..." }]);
-          };
-          reader.readAsText(file);
-        } else {
-          // Para la demo: mostramos que el sistema reconoció el archivo crudo
-          setExtractedData([{ 
-            id: "NEW", 
-            lx: file.name, 
-            ps: "formato_" + file.name.split('.').pop(),
-            dn: "El archivo ha sido recibido exitosamente. El motor de extracción (Python) está listo para procesar la estructura MDF." 
-          }]);
-        }
+        
+        // Mock de datos para la presentación
+        setExtractedData([{ 
+          id: "AUTO", 
+          lx: file.name.split('.')[0], 
+          ps: "archivo_" + file.name.split('.').pop(),
+          dn: `Contenido extraído exitosamente del archivo ${file.name}. El motor X-Manikt ha identificado la estructura léxica y está listo para la conversión final.`,
+          de: "Content successfully extracted. Python engine ready for final conversion."
+        }]);
       }, 1500);
     }
   };
 
-  // 3. FORMATEO MDF
+  // 3. VISTA PREVIA MDF
   const mdfPreview = useMemo(() => {
-    if (isProcessing) return "Procesando archivo mediante motor X-Manikt (Python)...";
-    if (!extractedData || extractedData.length === 0) return "Esperando datos...";
+    if (isProcessing) return "Ejecutando extractor de Python...";
+    if (!extractedData || extractedData.length === 0) return "Esperando entrada...";
     
     const item = extractedData[0]; 
     return [
@@ -74,8 +68,8 @@ export default function Dashboard() {
     <section id="dashboard" className="dashboard">
       <div className="container">
         <div className="dashboard__heading">
-          <p className="section-tag">X-MANIKT INTERFACE</p>
-          <h2>Panel de Control Lexicográfico</h2>
+          <p className="section-tag">X-MANIKT CORE</p>
+          <h2>Dashboard de Procesamiento</h2>
         </div>
 
         <div className="dashboard__grid">
@@ -83,12 +77,15 @@ export default function Dashboard() {
           <div className="card dashboard__panel dashboard__panel--sidebar reveal">
             <div className="dashboard__panel-title">
               <div className="dashboard__icon"><Upload size={20} /></div>
-              <h3>Entrada de Datos</h3>
+              <h3>Entrada Cruda</h3>
             </div>
             
             <div className="dashboard__controls">
-              {/* EL BOTÓN AHORA ACEPTA PDF, DOCX Y TXT */}
-              <button onClick={() => fileRef.current?.click()} className="dashboard__upload-box">
+              {/* SOPORTE PARA PDF, DOCX Y TXT */}
+              <button 
+                onClick={() => fileRef.current?.click()} 
+                className={`dashboard__upload-box ${isProcessing ? 'processing' : ''}`}
+              >
                 <div className="dashboard__upload-icon">
                   {isProcessing ? <Clock size={24} className="spin" /> : <Upload size={24} />}
                 </div>
@@ -106,14 +103,14 @@ export default function Dashboard() {
 
               {uploadedFile && (
                 <div className="dashboard__file-ok">
-                  <CheckCircle2 size={18} color="#10b981" />
-                  <span style={{ fontSize: '12px' }}>{uploadedFile.name}</span>
-                  <button onClick={() => setUploadedFile(null)} className="btn-clear">X</button>
+                  <CheckCircle2 size={16} color="#10b981" />
+                  <span style={{ fontSize: '11px', fontWeight: 'bold' }}>{uploadedFile.name}</span>
+                  <button onClick={() => setUploadedFile(null)} className="btn-remove">×</button>
                 </div>
               )}
 
               <div style={{ marginTop: '20px' }}>
-                <label>Ver Diccionarios Procesados</label>
+                <label>Ver Resultados del Repo</label>
                 <select 
                   value={dictionaryType} 
                   onChange={(e) => {setUploadedFile(null); setDictionaryType(e.target.value);}}
@@ -128,10 +125,57 @@ export default function Dashboard() {
               </div>
 
               <div className="dashboard__status">
-                <p>Status: <strong>{isProcessing ? "Analizando..." : "Activo"}</strong></p>
-                <p>Formato de entrada: <span>MDF/PDF</span></p>
+                <p>Status: <strong>{isProcessing ? "Extrayendo..." : "En Línea"}</strong></p>
+                <p>Engine: <span>Python/MDF</span></p>
               </div>
             </div>
           </div>
 
-          {/* V
+          {/* PANEL CENTRAL: JSON */}
+          <div className="card dashboard__panel reveal reveal-delay-1">
+            <div className="dashboard__panel-head">
+              <div className="dashboard__panel-title">
+                <div className="dashboard__icon"><FileText size={20} /></div>
+                <h3>Estructura Extraída (JSON)</h3>
+              </div>
+            </div>
+            <div className="dashboard__code dashboard__code--dark">
+              <pre>
+                {isProcessing 
+                  ? "// Ejecutando script de extracción..." 
+                  : JSON.stringify(extractedData.slice(0, 2), null, 4)
+                }
+              </pre>
+            </div>
+          </div>
+
+          {/* PANEL DERECHO: MDF */}
+          <div className="card dashboard__panel reveal reveal-delay-2">
+            <div className="dashboard__panel-head">
+              <div className="dashboard__panel-title">
+                <div className="dashboard__icon"><Languages size={20} /></div>
+                <h3>Formato Lingüístico</h3>
+              </div>
+              <button 
+                onClick={() => {
+                  const blob = new Blob([JSON.stringify(extractedData, null, 2)], { type: 'application/json' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `XManikt_Export.json`;
+                  a.click();
+                }} 
+                className="pill-button pill-button--primary"
+              >
+                <Download size={14} /> Exportar
+              </button>
+            </div>
+            <div className="dashboard__code dashboard__code--light">
+              <pre>{mdfPreview}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
