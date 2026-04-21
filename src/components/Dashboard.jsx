@@ -1,52 +1,55 @@
-
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState, useEffect } from 'react'
 import { Upload, FileText, Languages, Download, CheckCircle2 } from 'lucide-react'
 import '../styles/Dashboard.css'
 
-const sampleRawText = `kwanaxhe' [kwanaʐeʔ] s. garlic. ajo.
-Ke' galallo' zío' kwanaxhe' gullé lawyá | Do not forget buying garlic tomorrow in the market. | Que no se te olvide comprar ajos mañana en el mercado`
-
-const sampleMdf = String.raw`\id 1
-\lx kwanaxhe'
-\ps s.
-\sn 1
-\se
-\ph [kwanaʐeʔ]
-\mr
-\de garlic.
-\dn ajo.
-\ge
-\gn
-\xv Ke' galallo' zío' kwanaxhe' gullé lawyá
-\xe Do not forget buying garlic tomorrow in the market.
-\xn Que no se te olvide comprar ajos mañana en el mercado
-\rf
-\cf
-\lf
-\lv
-\wv
-\vd
-\nt
-\et
-\sc
-\lo
-\pc`
-
 export default function Dashboard() {
   const [outputFormat, setOutputFormat] = useState('JSON')
-  const [dictionaryType, setDictionaryType] = useState('Zapoteco')
+  const [dictionaryType, setDictionaryType] = useState('zapoteco') // En minúsculas para coincidir con archivos
   const [uploadedFile, setUploadedFile] = useState(null)
+  const [extractedData, setExtractedData] = useState([]) 
   const fileRef = useRef(null)
 
-  const previewText = useMemo(() => {
+  // Carga automática del JSON basado en la lengua seleccionada
+  useEffect(() => {
     if (!uploadedFile) {
-      return 'Aún no has cargado un archivo. Aquí aparecerá el texto extraído para revisión.'
+      // Intentamos cargar el archivo desde public/data/
+      const url = `${import.meta.env.BASE_URL}data/${dictionaryType.toLowerCase()}.json`;
+      
+      fetch(url)
+        .then(res => res.json())
+        .then(data => setExtractedData(data))
+        .catch(err => {
+          console.error("Error cargando diccionario:", err);
+          setExtractedData([]);
+        });
     }
+  }, [dictionaryType, uploadedFile]);
 
-    return `Archivo seleccionado: ${uploadedFile.name}
+  // Previsualización de los datos (Muestra solo los primeros 3 para no saturar)
+  const previewText = useMemo(() => {
+    if (extractedData.length === 0) return 'Cargando datos o archivo no encontrado...';
+    
+    if (outputFormat === 'JSON') {
+      return JSON.stringify(extractedData.slice(0, 3), null, 2) + "\n\n... (mostrando inicio del archivo)";
+    }
+    return "Formato YAML no disponible en esta vista.";
+  }, [extractedData, outputFormat]);
 
-Aquí irá el texto extraído desde el backend o desde el parser del navegador.`
-  }, [uploadedFile])
+  // Generador de formato MDF para la previsualización derecha
+  const mdfPreview = useMemo(() => {
+    if (extractedData.length === 0) return "Sin datos";
+    const item = extractedData[0]; // Tomamos la primera entrada como ejemplo
+    return [
+      `\\id ${item.id || 1}`,
+      `\\lx ${item.lx || ''}`,
+      `\\ps ${item.ps || ''}`,
+      `\\ph ${item.ph || ''}`,
+      `\\de ${item.de || ''}`,
+      `\\dn ${item.dn || ''}`,
+      `\\xv ${item.xv || ''}`,
+      `\\xn ${item.xn || ''}`
+    ].join('\n');
+  }, [extractedData]);
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0]
@@ -58,58 +61,40 @@ Aquí irá el texto extraído desde el backend o desde el parser del navegador.`
       <div className="container">
         <div className="dashboard__heading">
           <p className="section-tag">Dashboard</p>
-          <p>
-            Carga el archivo, revisa el contenido y observa la salida etiquetada.
-          </p>
+          <p>Explora los diccionarios procesados de lenguas indígenas.</p>
         </div>
 
         <div className="dashboard__grid">
-          <div className="card dashboard__panel dashboard__panel--sidebar reveal">            <div className="dashboard__panel-title">
+          {/* PANEL DE CONTROL */}
+          <div className="card dashboard__panel dashboard__panel--sidebar reveal">
+            <div className="dashboard__panel-title">
               <div className="dashboard__icon"><Upload size={20} /></div>
-              <div>
-                <h3>Sube tu archivo</h3>
-              </div>
+              <h3>Configuración</h3>
             </div>
 
             <div className="dashboard__controls">
-              <button
-                onClick={() => fileRef.current?.click()}
-                className="dashboard__upload-box"
-              >
-                <div className="dashboard__upload-icon">
-                  <Upload size={24} />
-                </div>
-                <span>Subir archivo</span>
-                <small>.docx · .pdf · .txt</small>
-              </button>
-
-              <input
-                ref={fileRef}
-                type="file"
-                className="dashboard__hidden-input"
-                accept=".docx,.pdf,.txt"
-                onChange={handleFileChange}
-              />
-
-              {uploadedFile && (
-                <div className="dashboard__file-ok">
-                  <CheckCircle2 size={18} />
-                  <span>{uploadedFile.name}</span>
-                </div>
-              )}
+              <div>
+                <label>Lengua del Diccionario</label>
+                <select
+                  value={dictionaryType}
+                  onChange={(e) => setDictionaryType(e.target.value)}
+                >
+                  <option value="zapoteco">Zapoteco</option>
+                  <option value="maya">Maya Yucateco</option>
+                  <option value="iskonawa">Iskonawa</option>
+                  <option value="popoluca">Popoluca</option>
+                  <option value="nahuatl">Náhuatl</option>
+                </select>
+              </div>
 
               <div>
-                <label>Formato de salida</label>
+                <label>Formato de Visualización</label>
                 <div className="dashboard__toggle-row">
                   {['JSON', 'YAML'].map((format) => (
                     <button
                       key={format}
                       onClick={() => setOutputFormat(format)}
-                      className={
-                        outputFormat === format
-                          ? 'dashboard__toggle dashboard__toggle--active'
-                          : 'dashboard__toggle'
-                      }
+                      className={outputFormat === format ? 'dashboard__toggle dashboard__toggle--active' : 'dashboard__toggle'}
                     >
                       {format}
                     </button>
@@ -117,59 +102,40 @@ Aquí irá el texto extraído desde el backend o desde el parser del navegador.`
                 </div>
               </div>
 
-              <div>
-                <label>Tipo de diccionario</label>
-                <select
-                  value={dictionaryType}
-                  onChange={(e) => setDictionaryType(e.target.value)}
-                >
-                  <option>Maya</option>
-                  <option>Zapoteco</option>
-                  <option>Popoluca</option>
-                  <option>Náhuatl</option>
-                  <option>Iskonawa</option>
-                </select>
-              </div>
-
               <div className="dashboard__status">
-                <p className="dashboard__status-title">Estado actual</p>
-                <p>Tipo: {dictionaryType}</p>
-                <p>Salida: {outputFormat}</p>
-                <p>Archivo: {uploadedFile ? 'Cargado' : 'Pendiente'}</p>
+                <p className="dashboard__status-title">Estadísticas</p>
+                <p>Entradas totales: {extractedData.length}</p>
+                <p>Estado: <span className="text-green-500">Conectado</span></p>
               </div>
             </div>
           </div>
 
-            <div className="card dashboard__panel reveal reveal-delay-1">            <div className="dashboard__panel-head">
+          {/* PANEL DE DATOS JSON */}
+          <div className="card dashboard__panel reveal reveal-delay-1">
+            <div className="dashboard__panel-head">
               <div className="dashboard__panel-title">
                 <div className="dashboard__icon"><FileText size={20} /></div>
-                <div>
-                  <h3>Texto extraído</h3>
-                </div>
+                <h3>Estructura {outputFormat}</h3>
               </div>
             </div>
-
             <div className="dashboard__code dashboard__code--dark">
-              <pre>{uploadedFile ? previewText : sampleRawText}</pre>
+              <pre>{previewText}</pre>
             </div>
           </div>
 
-            <div className="card dashboard__panel reveal reveal-delay-2">            <div className="dashboard__panel-head">
+          {/* PANEL DE PREVISUALIZACIÓN MDF */}
+          <div className="card dashboard__panel reveal reveal-delay-2">
+            <div className="dashboard__panel-head">
               <div className="dashboard__panel-title">
                 <div className="dashboard__icon"><Languages size={20} /></div>
-                <div>
-                  <h3>Previsualización MDF</h3>
-                </div>
+                <h3>Ficha Técnica (MDF)</h3>
               </div>
-
               <button className="pill-button pill-button--primary dashboard__download">
-                <Download size={16} />
-                Descargar
+                <Download size={16} /> Descargar
               </button>
             </div>
-
             <div className="dashboard__code dashboard__code--light">
-              <pre>{sampleMdf}</pre>
+              <pre>{mdfPreview}</pre>
             </div>
           </div>
         </div>
