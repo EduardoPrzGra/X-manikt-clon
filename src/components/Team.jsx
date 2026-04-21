@@ -13,10 +13,10 @@ const teamMembers = [
     bio: 'Estudiante de ingeniería en computación cursando sexto y séptimo semestre. Encargado de pruebas y documentación.',
     image: `${import.meta.env.BASE_URL}assets/team/sergio.jpeg`,  },
   {
-    name: 'Integrante 3',
+    name: 'Eduardo Perez Garcia',
     tag: 'Backend · Regex',
-    bio: 'Encargado del flujo de extracción, limpieza de texto y transformación de entradas hacia estructuras compatibles con MDF.',
-    initials: 'I3',
+    bio: 'Estudio ingenieria en computación y me interesa mucho el mundo del analisis de datos',
+    image: `${import.meta.env.BASE_URL}assets/team/Lalo.jpeg`,
   },
   {
     name: 'Integrante 4',
