@@ -168,8 +168,9 @@ export default function Dashboard() {
                 <div className="dashboard__icon"><Languages size={20} /></div>
                 <h3>Formato MDF</h3>
               </div>
-              <button className="pill-button pill-button--primary dashboard__download">
-                <Download size={16} /> Descargar
+              <button onClick={descargarDiccionario} className="pill-button pill-button--primary dashboard__download">
+                <Download size={16} />
+                Descargar
               </button>
             </div>
             <div className="dashboard__code dashboard__code--light">
