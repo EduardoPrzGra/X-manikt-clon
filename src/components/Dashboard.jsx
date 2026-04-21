@@ -63,7 +63,28 @@ export default function Dashboard() {
     const file = e.target.files?.[0]
     if (file) setUploadedFile(file)
   }
-
+  const descargarDiccionario = () => {
+      if (extractedData.length === 0) return alert("No hay datos para descargar");
+  
+      // Convertimos el JSON a un String bonito
+      const dataStr = JSON.stringify(extractedData, null, 2);
+      
+      // Creamos un "Blob" (un objeto tipo archivo)
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      
+      // Creamos un link invisible para forzar la descarga
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `diccionario_${dictionaryType}.json`; // Nombre del archivo
+      
+      document.body.appendChild(link);
+      link.click();
+      
+      // Limpiamos la memoria
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    };
   return (
     <section id="dashboard" className="dashboard">
       <div className="container">
